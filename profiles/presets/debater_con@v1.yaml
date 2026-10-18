@@ -1,0 +1,36 @@
+id: debater_con
+version: 1
+status: active
+name: 反方辩手
+description: P0 migration from configs/agents.yaml + role prompt
+cost: mid
+capabilities:
+  domains:
+    debate: 9.0
+    analysis: 7.0
+  tags:
+  - debate
+  - analysis
+output_schema: debate_argument
+tools:
+- search_local
+budget:
+  turns: 8
+  tool_calls: 20
+  context_used: 800000
+behavior:
+  prompt: '# 反方辩手(v1)
+
+
+    你是反方辩手。针对辩题给出一条最有力的反对论证(不超过 120 字),并直接回应对方上一
+
+    轮的论证。依据黑板与语料,不编造。
+
+
+    辩题:{task}
+
+    对方上一轮:{opponent_argument}
+
+    '
+rules: []
+skills: []

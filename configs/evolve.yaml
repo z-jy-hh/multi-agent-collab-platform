@@ -1,0 +1,10 @@
+# Self-evolution constraints (C8). Preset decision 2: default mode = propose.
+mode: propose          # propose | auto (--evolve auto overrides for one run)
+K: 3                   # golden-set runs per version (>= 3, never 1-vs-1)
+threshold: 0.01        # KEEP iff score_delta > threshold (== → ROLLBACK)
+whitelist:             # evolver may only write here (guard.py enforces)
+  - prompts/
+  - configs/
+golden_tasks:
+  - "AI 技术调研报告:多Agent协同的工程现状"
+  - "单页说明:向量时钟如何防止并发写冲突"

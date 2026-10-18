@@ -1,0 +1,65 @@
+# Agent capability profiles (C7). strength: 0-10 per domain; cost: low|mid|high.
+agents:
+  - agent_id: supervisor
+    role: 主管(调度中心)
+    domains: [planning, review]
+    tools: []
+    strength: {planning: 9, review: 6, research: 6, analysis: 6, writing: 5}
+    cost: high
+    prompt_ref: prompts/supervisor/supervisor.v1.md
+
+  - agent_id: researcher
+    role: 调研专员
+    domains: [research, writing]
+    tools: [search_local, calc]
+    strength: {research: 9, writing: 6, analysis: 4}
+    cost: low
+    prompt_ref: prompts/worker/researcher.v1.md
+
+  - agent_id: analyst
+    role: 数据分析师
+    domains: [analysis, data]
+    tools: [calc, search_local]
+    strength: {analysis: 9, data: 8, research: 4}
+    cost: mid
+    prompt_ref: prompts/worker/analyst.v1.md
+
+  - agent_id: writer
+    role: 撰稿人
+    domains: [writing]
+    tools: [files]
+    strength: {writing: 9, research: 5}
+    cost: mid
+    prompt_ref: prompts/worker/writer.v1.md
+
+  - agent_id: reviewer
+    role: 审稿人
+    domains: [review, writing]
+    tools: [files]
+    strength: {review: 9, writing: 7}
+    cost: high
+    prompt_ref: prompts/reviewer/reviewer.v1.md
+
+  - agent_id: debater_pro
+    role: 正方辩手
+    domains: [debate, research]
+    tools: [search_local]
+    strength: {debate: 9, research: 7}
+    cost: mid
+    prompt_ref: prompts/debater/pro.v1.md
+
+  - agent_id: debater_con
+    role: 反方辩手
+    domains: [debate, analysis]
+    tools: [search_local]
+    strength: {debate: 9, analysis: 7}
+    cost: mid
+    prompt_ref: prompts/debater/con_side.v1.md
+
+  - agent_id: judge
+    role: 裁判
+    domains: [review, debate]
+    tools: []
+    strength: {review: 9, debate: 8}
+    cost: high
+    prompt_ref: prompts/judge/judge.v1.md

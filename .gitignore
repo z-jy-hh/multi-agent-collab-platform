@@ -1,0 +1,10 @@
+.venv/
+.uvcache/
+.pytest_cache/
+__pycache__/
+*.pyc
+.env
+runs/
+reports/layercheck/
+.git.damaged_*/
+node_modules/

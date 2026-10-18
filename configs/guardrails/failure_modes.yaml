@@ -1,0 +1,96 @@
+# MEM1 护栏数据件（令 93fef01e3a1761a1 · 附录 A-1 种子 12 条，本令不增不减）。
+# 语义（附录 B-1，先读文件的人必须看到）：
+# - 条目只增不改（append-only）；改动即判据台账变更史登记。
+# - `global`：所有 agent 都注入；`by_agent.<agent_id>`：覆盖/追加。
+# - 覆盖是【逐 id】：同 id 以 by_agent 版本为准，global 中其它 id 仍对该 agent
+#   生效（不是整体替换）；by_agent 独有的 id 按其声明序追加在尾部。
+# - 条目顺序 = yaml 声明序（禁排序/随机）；注入块模板对所有 agent 同键同序同格式。
+# - 字段固定：id / symptom / guard / judge_hint（source 为可选来源登记，不机检）。
+global:
+  - id: FM-SILENT-FAIL
+    symptom: 命令/写入/校验静默失败仍返回成功
+    guard: 失败必须出声；输出为空 = 失败；清理/写入/校验失败必须响亮报告，不得吞掉
+    judge_hint: 抽查是否存在零输出却声称成功的步骤；核对该步骤的失败路径是否被吞掉
+    source: 本弧独立命中 4 次（env 劫持、Edit 不落盘、rmtree ignore_errors、WARN 冒充 PASS）
+  - id: FM-CMD-WORKDIR
+    symptom: 命令缺工作目录，报 file or directory not found
+    guard: 每条命令显式带 cd 绝对路径，并回显 pwd/rootdir
+    judge_hint: 核对门禁命令是否带工作目录且输出含 pwd/rootdir 回显
+    source: 本弧 3 次（P2FIX2 + P3 ×2，已固化为门禁规则 6）
+  - id: FM-RED-LIGHT-COMMIT
+    symptom: 判据红灯仍然提交
+    guard: 绿灯才提交；红灯即停并先定位根因
+    judge_hint: 核对提交时点最近一次判据运行是否全绿
+    source: DSH 自曝 1 次（HOSTPICK R2）
+  - id: FM-WEAK-DISCRIMINATOR
+    symptom: 断言摘掉被保护项仍绿（判据不判别）
+    guard: 判别器必须真判别：摘掉被保护对象必红
+    judge_hint: 对每条判据追问——把被保护行为变异掉，这条判据会不会红
+    source: DSH 1 次 + 该族贯穿 R5 三轮
+  - id: FM-FENCE-AS-DETERMINISM
+    symptom: 用轮询/sleep/超时充当确定性
+    guard: 禁时间栅栏；确定性必须结构性（因果屏障/归一化/串行化）
+    judge_hint: 检查是否存在 sleep/轮询/超时充当同步语义
+    source: P2-FIX 死栅栏 + 时间栅栏
+  - id: FM-SINGLE-SAMPLE
+    symptom: 单次采样当确定性证据
+    guard: 至少 N 连绿并在负载下采样；单次绿不算
+    judge_hint: 核对结论背后的采样次数与负载条件
+    source: R5 抖动（我 2/8、他 0/24）
+  - id: FM-ENV-SWITCH
+    symptom: 行为开关 env 改变被测行为
+    guard: 门禁剥净并钉死行为开关 env，且列明 env 名单
+    judge_hint: 核对门禁是否声明剥离/钉死的 env 名单
+    source: DISPATCH_HETERO 实证
+  - id: FM-CRITERION-EROSION
+    symptom: 判据强度被静默降级
+    guard: 判据台账 + 强度变更史 + 三方对账自洽
+    judge_hint: 核对判据变更是否在台账变更史登记、对账是否一致
+    source: 本弧（逐字节→交错等价→调度等价）
+  - id: FM-LAYER-PLACEMENT
+    symptom: 新测试落错层（unit 跨层 import）
+    guard: 按层规则选落点——tests/unit 禁顶层 import graphs/api，跨层判据放 tests/integration
+    judge_hint: 核对新增测试文件的落点与其 import 的层
+    source: P3 门禁红（规则 7）
+  - id: FM-PARALLEL-EDIT
+    symptom: 同文件并行编辑互相覆盖
+    guard: 同文件改动一律串行；批量用原子重放脚本；改后 grep 复核落盘
+    judge_hint: 核对批量改动后各锚点是否都在盘上
+    source: 本弧 2 次
+  - id: FM-GATE-PERIOD-WRITE
+    symptom: 门禁运行期间改仓库/报告
+    guard: 门禁期对仓库零写操作；树净才算收工
+    judge_hint: 核对门禁时间窗内的提交/改动时序
+    source: P3 第 2 轮门禁作废
+  - id: FM-NAME-COLLISION
+    symptom: 两线报告同名相撞
+    guard: 线前缀 + 索引别名映射；交付前查重
+    judge_hint: 核对交付件命名是否走索引别名表
+    source: zcode SPI vs 画布 P2
+  - id: FM-TRANSPORT-PATH-ASSERT
+    symptom: 存在性判据只断言路径，路径态变体漏检、内容损坏不红
+    guard: 命中判据须两态——存在则逐件核内容（含 sha 交叉核），缺失仍红；禁纯路径断言
+    judge_hint: 用既有两态用例机检——对命中判据做内容篡改变异必红、对路径做缺失变异必红
+    source: MEM1FIX G5（路径态变体盲检实证，判别器 46b051fd670167d4）
+  - id: FM-ROOT-MISUSED-AS-WORKSPACE
+    symptom: 把库根/仓库根当工作区铺开现场，根下散落实验产物
+    guard: 工作现场一律落显式工作目录/副本；根目录只读通行，禁在根下落新文件
+    judge_hint: 机检——checker.py C3（库根非白名单目录，期望 FAIL=0）：工作现场/产物落库根必红；cwd 口径归 FM-CWD-IN-VAULTROOT
+    source: E26（本弧 1 次，根被当工作区）
+  - id: FM-GENERATOR-OVERWRITES-APPROVED
+    symptom: 生成器把已批（非 draft）件当草稿静默覆盖
+    guard: 生成器写前读目标 status——非 draft 拒写（REFUSE 固定前缀）；--force 须醒目警告并落盘留痕
+    judge_hint: 机检——对已批件试写必 REFUSE 且 rc!=0；--force 必产生警告行与审计留痕行
+    source: E27（本弧真隐患，agent_profile.py 硬写 draft 无守卫）
+  - id: FM-TEMP-SNAPSHOT-FLAKE
+    symptom: 断言快照扫入宿主临时区，外来临时文件扰动致偶发红
+    guard: 快照/清单断言钉死目录边界，禁扫 %TEMP% 等宿主易变区；或显式剥离外来项
+    judge_hint: 机检——宿主临时文件扰动下该断言不得报红（扰动下复跑 3 连绿）
+    source: E28（MEM1FIX 门禁 run1 偶发红，单跑 3/3 复绿）
+  - id: FM-CWD-IN-VAULTROOT
+    symptom: 命令 cwd 落在库根/仓库根，读改指向失焦且易误写根下文件
+    guard: 每条命令显式 cd 到具体子目录；临时进根只许只读操作并即离
+    judge_hint: 机检——checker.py C3（库根非白名单目录，期望 FAIL=0）：命令 cwd 落库根必红；产物落根口径归 FM-ROOT-MISUSED-AS-WORKSPACE
+    source: E29（DSH 自曝 1 次，vault-root CWD）
+# by_agent 覆盖/追加（种子为空——12 条均为执行方通用纪律；覆盖语义判据用夹具 yaml 验证）
+by_agent: {}

@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "reason": "refine prompts/supervisor/supervisor.v1.md due to: arbitration, arbitration, arbitration, arbitration, arbitration, arbitration",
+  "decision": "ROLLBACK",
+  "score_delta": 0.009659372699345359,
+  "created_at": 1790351614.8007345,
+  "files": {
+    "prompts/supervisor/supervisor.v1.md": "afd7c3d45ec90c8a71dd10f22e89f5f1c998b27f4cd314a79ea9e78a70691a82"
+  },
+  "diff": "--- a/prompts/supervisor/supervisor.v1.md\n+++ b/prompts/supervisor/supervisor.v1.md\n@@ -14,3 +14,5 @@\n \n 输出格式:\n {{\"subtasks\": [{{\"subtask_id\": \"s1\", \"description\": \"...\", \"required_capabilities\": [\"research\"]}}]}}\n+\n+补充约束(v2):子任务切分必须互斥,避免两个执行者写同一分片。"
+}

@@ -1,0 +1,232 @@
+﻿/* P0 视觉稿对齐（深色）· 只做主题与布局覆盖，不改任何业务逻辑。
+ * 加载位置：index.html 末尾（在既有 <style> 之后），因此可以覆盖旧浅色规则。
+ */
+:root {
+  --bg: #0b0d10;
+  --card: #12151a;
+  --card2: #161a20;
+  --line: #262a31;
+  --line-hi: #33383f;
+  --ink: #e6e8eb;
+  --dim: #9aa3ad;
+  --dim3: #8b949e;
+  --acc: #5b8cff;
+  --ok: #3fb950;
+  --warn: #d29922;
+  --err: #f85149;
+  --vio: #a371f7;
+  --radius: 10px;
+}
+
+html body {
+  background: var(--bg) !important;
+  color: var(--ink) !important;
+  font: 13px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+html body * { scrollbar-color: #2b3038 transparent; }
+
+/* ---------- topbar ---------- */
+body > header#topbar {
+  background: var(--panel, #111419) !important;
+  border-bottom: 1px solid var(--line) !important;
+  padding: 8px 14px 6px !important;
+}
+#topbar h1 { font-size: 14px !important; font-weight: 600 !important; letter-spacing: .2px; }
+#topbar h1::before {
+  content: ""; display: inline-block; width: 18px; height: 18px; margin-right: 8px;
+  border-radius: 5px; vertical-align: -4px;
+  background: linear-gradient(135deg, #5b8cff, #a371f7);
+}
+#topbar .row { gap: 8px !important; }
+#topbar label { color: var(--dim3) !important; font-size: 11px !important; }
+#topbar input, #topbar select, #composer input, #composer select {
+  background: #0f1216 !important; color: var(--ink) !important;
+  border: 1px solid var(--line) !important; border-radius: 8px !important;
+  padding: 6px 9px !important; font-size: 12px !important;
+}
+#topbar input::placeholder { color: #5b636d !important; }
+#topbar button, .tbtn, .ghost {
+  background: #181c22 !important; color: var(--ink) !important;
+  border: 1px solid var(--line) !important; border-radius: 8px !important;
+  padding: 6px 10px !important; cursor: pointer; font-size: 12px !important;
+}
+#btn-run { background: var(--acc) !important; border-color: var(--acc) !important; color: #fff !important; font-weight: 600; }
+#topbar button:hover, .tbtn:hover, .ghost:hover { background: #20252d !important; }
+#topbar button[aria-pressed="true"] { background: rgba(91,140,255,.18) !important; color: #c9d8ff !important; }
+
+/* ---------- subbar（任务标题 + 模式切换 + 成本） ---------- */
+#subbar {
+  display: flex; align-items: center; gap: 10px; padding: 7px 14px;
+  border-bottom: 1px solid var(--line); background: #0e1116;
+  font-size: 12px; color: var(--dim);
+}
+#subbar .ttl { color: var(--ink); font-weight: 600; max-width: 46%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#subbar .mseg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+#subbar .mseg button { all: unset; cursor: pointer; padding: 3px 10px; font-size: 11px; color: var(--dim); }
+#subbar .mseg button.on { background: rgba(91,140,255,.18); color: #c9d8ff; }
+#subbar .cost { margin-left: auto; color: var(--dim3); font-variant-numeric: tabular-nums; }
+#subbar .permchip { color: var(--warn); border: 1px solid rgba(210,153,34,.45); border-radius: 6px; padding: 1px 7px; font-size: 11px; display: none; }
+#subbar .permchip.on { display: inline; }
+
+/* ---------- shell / sidebar ---------- */
+#main { background: var(--bg) !important; }
+#sidebar {
+  background: #0e1116 !important; border-right: 1px solid var(--line) !important;
+  color: var(--ink) !important; padding: 10px 10px 0 !important;
+}
+#sidebar h2, #sidebar h2 button { color: var(--dim3) !important; font-size: 11px !important; letter-spacing: .3px; }
+#new-task-btn {
+  width: 100%; margin-bottom: 10px; padding: 8px 10px; border-radius: 8px;
+  background: #181c22; border: 1px solid var(--line-hi); color: var(--ink); cursor: pointer;
+}
+#new-task-btn:hover { background: #20252d; }
+.grp-h { display: flex; align-items: center; gap: 6px; color: var(--dim3); font-size: 11px; padding: 8px 4px 4px; }
+.grp-h .cnt { color: var(--dim); font-variant-numeric: tabular-nums; }
+.task-item, #task-tree > * {
+  border-radius: 8px; border: 1px solid transparent;
+}
+#task-tree > *:hover { background: #141920 !important; }
+#task-tree .sel, #task-tree .selected { background: rgba(91,140,255,.12) !important; border-color: rgba(91,140,255,.35) !important; }
+#task-tree { color: var(--ink) !important; }
+#sidebar input, #sidebar button { font-size: 11px; }
+#sidebar .siderfoot { border-top: 1px solid var(--line); margin-top: 8px; padding: 8px 4px; color: var(--dim3); font-size: 11px; }
+#sidebar .siderfoot .row { display: flex; justify-content: space-between; padding: 1px 0; }
+#sidebar .siderfoot b { color: var(--ink); font-weight: 500; }
+
+/* ---------- stage / toolbar ---------- */
+#canvas-wrap { background: var(--bg) !important; }
+#canvas-tools {
+  background: #0e1116 !important; border-bottom: 1px solid var(--line) !important;
+  padding: 6px 10px !important; gap: 6px !important;
+}
+#canvas {
+  background-color: #0b0d10 !important;
+  background-image: radial-gradient(circle, #1c2128 1px, transparent 1px) !important;
+  background-size: 18px 18px !important;
+}
+#canvas-empty { color: var(--dim3) !important; }
+#agent-count, #ui-state { background: #141920 !important; color: var(--dim) !important; border: 1px solid var(--line) !important; }
+
+/* ---------- windows ---------- */
+.win {
+  background: #12161c !important; border: 1px solid var(--line-hi) !important;
+  border-radius: 10px !important; box-shadow: 0 10px 30px rgba(0,0,0,.45) !important;
+  color: var(--ink) !important; overflow: hidden;
+}
+.win-head {
+  display: flex; align-items: center; gap: 6px; padding: 6px 9px;
+  border-bottom: 1px solid var(--line); background: #141920;
+}
+.win-title { font-weight: 600; font-size: 12px; color: var(--ink); }
+.win-sub { color: var(--dim3); font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.win-badge { font-size: 10px; padding: 1px 6px; border-radius: 999px; border: 1px solid var(--line-hi); color: var(--dim); }
+.win-badge[data-kind="native"] { color: var(--ok); border-color: var(--ok); }
+.win-badge[data-kind="unconnected"] { color: var(--warn); border-color: var(--warn); }
+.win-badge[data-kind="unauthorized"] { color: var(--warn); border-color: var(--warn); }
+.win-btn { all: unset; cursor: pointer; color: var(--dim); padding: 0 5px; font-size: 13px; border-radius: 5px; }
+.win-btn:hover { background: #20252d; color: var(--ink); }
+.win-info {
+  display: flex; gap: 14px; padding: 4px 9px; border-bottom: 1px solid var(--line);
+  color: var(--dim3); font-size: 10.5px; background: #12161c;
+}
+.win-info b { color: var(--dim); font-weight: 500; }
+.win-tabs { display: flex; gap: 2px; padding: 4px 6px 0; border-bottom: 1px solid var(--line); background: #12161c; }
+.win-tab {
+  all: unset; cursor: pointer; padding: 3px 9px; font-size: 11px; color: var(--dim3);
+  border-bottom: 2px solid transparent;
+}
+.win-tab.on { color: var(--ink); border-bottom-color: var(--acc); }
+.win-body, .win-trace {
+  padding: 8px 9px !important; overflow: auto; color: var(--ink);
+  font-size: 12px; line-height: 1.55; height: calc(100% - 96px);
+}
+.win-trace { font-family: ui-monospace, Consolas, monospace; font-size: 11px; }
+.logline {
+  border-left: 2px solid var(--line) !important; padding: 2px 0 2px 7px !important;
+  margin: 2px 0 !important; color: var(--dim) !important; background: none !important;
+}
+.logline b { color: var(--ink); }
+.logline.run_finished { border-left-color: var(--ok) !important; }
+.logline.run_error { border-left-color: var(--err) !important; color: #ffb3ae !important; }
+.logline.agent_output { border-left-color: var(--acc) !important; }
+.io-block {
+  border: 1px solid var(--line) !important; background: #0f1216 !important;
+  border-radius: 8px !important; padding: 7px 9px !important; margin: 6px 0 !important;
+}
+.io-block .io-k { color: var(--dim3) !important; font-size: 10.5px !important; }
+.io-block pre { color: var(--ink) !important; max-height: 140px; }
+
+/* ---------- version dock ---------- */
+#version-dock {
+  position: fixed; right: 18px; bottom: 110px; width: 320px; z-index: 40;
+  background: #12161c; border: 1px solid var(--line-hi); border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.5); overflow: hidden;
+}
+#version-dock .vd-head { display: flex; align-items: center; justify-content: space-between; padding: 7px 10px; border-bottom: 1px solid var(--line); font-size: 11px; color: var(--dim3); }
+#version-dock .vd-body { max-height: 190px; overflow: auto; padding: 4px; }
+#version-dock .vrow { display: flex; align-items: center; gap: 8px; padding: 5px 7px; border-radius: 7px; font-size: 11px; color: var(--dim); }
+#version-dock .vrow:hover { background: #161b22; }
+#version-dock .vrow .tag { padding: 0 6px; border-radius: 999px; border: 1px solid var(--line-hi); font-size: 10px; }
+#version-dock .vrow .tag.live { color: var(--acc); border-color: rgba(91,140,255,.5); }
+#version-dock .vrow .tag.ok { color: var(--ok); border-color: rgba(63,185,80,.5); }
+#version-dock .vrow .tag.gone { color: var(--dim3); }
+
+/* ---------- composer ---------- */
+#composer {
+  display: flex; align-items: center; gap: 8px; padding: 8px 14px;
+  background: #0e1116; border-top: 1px solid var(--line);
+}
+#composer .hint { color: var(--dim3); font-size: 11px; white-space: nowrap; }
+#composer input#composer-text { flex: 1; min-width: 200px; }
+#composer button#composer-send {
+  width: 34px; height: 34px; border-radius: 50%; border: none; cursor: pointer;
+  background: var(--acc); color: #fff; font-size: 15px;
+}
+
+/* ---------- status bar ---------- */
+#statusbar {
+  display: flex; align-items: center; gap: 14px; padding: 0 14px; height: 26px;
+  background: #0a0c0f; border-top: 1px solid var(--line);
+  color: var(--dim3); font-size: 11px; font-family: ui-monospace, Consolas, monospace;
+}
+
+/* ---------- result / history panels ---------- */
+#bottom { background: var(--bg) !important; }
+#result-panel, #history-panel {
+  background: #0e1116 !important; border: 1px solid var(--line) !important;
+  border-radius: 10px !important; color: var(--ink) !important;
+}
+#result-panel h2, #history-panel h2 { color: var(--dim) !important; font-size: 12px !important; }
+#result { color: var(--ink) !important; }
+#result .state-pill, .state-pill {
+  background: #141920 !important; color: var(--dim) !important;
+  border: 1px solid var(--line) !important; border-radius: 999px !important;
+}
+.modal { background: #12161c !important; color: var(--ink) !important; border: 1px solid var(--line-hi) !important; }
+.modal-mask { background: rgba(0,0,0,.6) !important; }
+pre.doc, #lgc-draft-out { background: #0f1216 !important; color: var(--ink) !important; }
+
+/* 结果/历史面板默认收起（由 subbar 按钮展开）；#bottom 有 display 规则，需显式覆盖 */
+#bottom[hidden] { display: none !important; }
+/* 开发用侧栏条（派发台/对话）在 P0 布局里隐藏，保留 DOM 与快捷键入口 */
+#dc-section, #conv-section { display: none !important; }
+#canvas.no-grid { background-image: none !important; }
+.tbtn { background:#141920 !important; border:1px solid var(--line) !important; color:var(--dim) !important; border-radius:8px; padding:3px 9px !important; font-size:11px !important; }
+.tbtn.on { color:#c9d8ff !important; border-color:rgba(91,140,255,.5) !important; }
+
+/* 工具栏改为静态条，避免压住窗口标题 */
+#canvas-tools { position: static !important; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 6px 10px !important; background: #0e1116 !important; border-bottom: 1px solid var(--line) !important; }
+#canvas { position: absolute !important; inset: var(--tools-h, 44px) 0 0 0 !important; }
+.grp { margin-bottom: 6px; }
+.grp-h { text-transform: none; }
+
+#settings-drawer { display:flex; align-items:center; gap:8px; padding:8px 14px; border-top:1px dashed var(--line); }
+#settings-drawer[hidden] { display:none; }
+#settings-drawer label { color:var(--dim3); font-size:11px; }
+#settings-drawer input { width:260px; }
+
+.chip2 { font-size:11px; padding:1px 7px; border:1px solid var(--line-hi); border-radius:6px; color:var(--dim); }
+.mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-variant-numeric: tabular-nums; }
+
+.win-tab.unread::after { content: '●'; color: var(--acc); font-size: 8px; margin-left: 3px; vertical-align: super; }

@@ -1,0 +1,13 @@
+checks:
+  - title_contains: 写盘落点
+    enforcement: hard
+    applies_to: [task, all]
+    check:
+      type: path_under
+      value: "D:\\dsh-work"
+  - title_contains: 征询
+    enforcement: hard
+    applies_to: [main]
+    check:
+      type: required_section
+      value: ["做什么", "如何做", "什么效果"]

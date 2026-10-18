@@ -1,0 +1,15 @@
+name: single
+description: 单 agent 带工具直接对话,无调度
+defaults:
+  recursion_limit: 16
+nodes:
+  - id: ask
+    kind: single_agent
+    agent: researcher
+    output_schema:
+      type: object
+      properties:
+        reply: {type: string}
+edges:
+  - {from: START, to: ask}
+  - {from: ask, to: END}

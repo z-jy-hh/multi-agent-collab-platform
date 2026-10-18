@@ -1,0 +1,3 @@
+prompts/** text eol=lf
+*.json text eol=lf
+tests/fixtures/** text eol=lf

@@ -1,0 +1,64 @@
+name: supervisor
+description: 主管拆解 → 能力匹配派活 → Send 并行执行 → 冲突仲裁 → 汇总 → 审核返工(默认模式)
+defaults:
+  max_review_rounds: 2
+  recursion_limit: 48
+  allocation_host_timeout_s: 600
+  review_adversarial: false
+nodes:
+  - id: plan
+    kind: plan
+    agent: supervisor
+    output_schema:
+      type: object
+      required: [subtasks]
+      properties:
+        subtasks:
+          type: array
+          items:
+            type: object
+            required: [subtask_id, description, required_capabilities]
+            properties:
+              subtask_id: {type: string}
+              description: {type: string}
+              required_capabilities: {type: array, items: {type: string}}
+  - id: match
+    kind: match
+    output_schema:
+      type: object
+      properties:
+        status: {type: string}
+        subtasks: {type: array, items: {type: object}}
+  - id: arbitrate
+    kind: arbitrate
+    output_schema:
+      type: object
+      properties:
+        conflicts: {type: array, items: {type: string}}
+        resolutions: {type: object}
+  - id: summarize
+    kind: summarize
+    agent: writer
+    output_schema:
+      type: object
+      properties:
+        report: {type: string}
+  - id: review
+    kind: review
+    agent: reviewer
+    output_schema:
+      type: object
+      required: [review_verdict]
+      properties:
+        review_verdict: {type: string, enum: [PASS, REWORK]}
+        review_round: {type: number}
+        review_comments: {type: string}
+edges:
+  - {from: START, to: plan}
+  - {from: plan, to: match}
+  - {from: match, to: worker, conditional: true, rule: execute_fanout}
+  - {from: worker, to: arbitrate}
+  - {from: arbitrate, to: summarize}
+  - {from: summarize, to: review}
+  - {from: review, to: END, conditional: true, rule: review_gate}
+  - {from: review, to: summarize, conditional: true, rule: review_gate}

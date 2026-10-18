@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "reason": "refine configs/agents.yaml due to: match, match, match, match, match, match",
+  "decision": "ROLLBACK",
+  "score_delta": 0.009491049641856986,
+  "created_at": 1790351614.5436177,
+  "files": {
+    "configs/agents.yaml": "e1fe235091b6b3394b7faa677d1ded0abd7db2f6cb4d6dd48b175fa73487e577"
+  },
+  "diff": "--- a/configs/agents.yaml\n+++ b/configs/agents.yaml\n@@ -63,3 +63,4 @@\n     strength: {review: 9, debate: 8}\n     cost: high\n     prompt_ref: prompts/judge/judge.v1.md\n+# 补充(v2):评审发现派活失败——检查 strength 是否低估了相关领域。\n"
+}

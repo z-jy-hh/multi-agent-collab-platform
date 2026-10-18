@@ -1,0 +1,22 @@
+# Direct pins per task book v3.1 Appendix B (20260925 pre-run values).
+# Final requirements.txt is resolved on-site via `uv pip compile` (C16/P3).
+langgraph==1.2.12
+crewai==1.15.22
+langchain-core==1.6.5
+chromadb==1.1.1
+openai==2.54.0
+instructor==1.17.0
+pydantic==2.12.5
+fastapi==0.141.1
+uvicorn==0.54.0
+sse-starlette==3.4.11
+numpy==2.4.6
+onnxruntime==1.30.0
+tokenizers==0.23.2
+httpx==0.28.1
+tenacity==9.1.4
+pytest==9.1.1
+json-repair==0.60.1
+langsmith==0.14.0
+python-dotenv
+pyyaml

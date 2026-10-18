@@ -1,0 +1,31 @@
+id: supervisor
+version: 1
+status: active
+name: 主管(调度中心)
+description: P0 migration from configs/agents.yaml + role prompt
+cost: high
+capabilities:
+  domains:
+    planning: 9.0
+    review: 6.0
+    research: 6.0
+    analysis: 6.0
+    writing: 5.0
+  tags:
+  - planning
+  - review
+output_schema: plan
+tools: []
+budget:
+  turns: 8
+  tool_calls: 20
+  context_used: 800000
+behavior:
+  prompt: "# 主管 · 任务拆解(v1)\n\n你是多 Agent 系统的调度主管。把下面的总任务拆解为不超过 {max_subtasks} 个可并行的子任务。\n\
+    \n规则:\n1. 每个子任务必须是别的 agent 能独立完成的一段工作;\n2. 每个子任务必须标注 required_capabilities,只能从\
+    \ research / analysis / writing / review 中选,\n   且优先拆成单一能力的子任务;若确需组合(如 research+analysis),团队中必须有同时擅长二者的综合岗;\n\
+    3. 子任务之间不要互相等待;输出 JSON,不要输出其他内容。\n\n总任务:{task}\n\n可用黑板结论(可为空):\n{blackboard_summary}\n\
+    \n输出格式:\n{{\"subtasks\": [{{\"subtask_id\": \"s1\", \"description\": \"...\",\
+    \ \"required_capabilities\": [\"research\"]}}]}}\n"
+rules: []
+skills: []

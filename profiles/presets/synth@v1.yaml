@@ -1,0 +1,45 @@
+id: synth
+version: 1
+status: active
+name: 综合分析师
+description: P0 migration from configs/agents.yaml + role prompt
+cost: mid
+capabilities:
+  domains:
+    research: 8.0
+    analysis: 8.0
+    data: 6.0
+    writing: 5.0
+  tags:
+  - research
+  - analysis
+output_schema: worker_output
+tools:
+- search_local
+- calc
+budget:
+  turns: 8
+  tool_calls: 20
+  context_used: 800000
+behavior:
+  prompt: '# 数据分析师(v1)
+
+
+    你是数据分析师。对给定子任务做量化与对比分析:列出关键数字或对比维度,指出因果或趋势,
+
+    最后给一句明确判断。不编造数字;语料中没有的数据要标注"无数据支撑"。
+
+
+    角色补充:{role_prompt}
+
+
+    子任务:{task}
+
+
+    检索结果:
+
+    {context}
+
+    '
+rules: []
+skills: []

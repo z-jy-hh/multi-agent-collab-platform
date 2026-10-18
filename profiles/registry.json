@@ -1,0 +1,77 @@
+{
+ "version": 1,
+ "profiles": [
+  {
+   "id": "supervisor",
+   "version": 1,
+   "status": "active",
+   "path": "profiles/presets/supervisor@v1.yaml",
+   "sha256": "917a330219c4b963830ec60e920ff4026bcaeb5bbdadef30f444b06d91dc6d74",
+   "approved_by": "P0 migration (2026-10-18)"
+  },
+  {
+   "id": "researcher",
+   "version": 1,
+   "status": "active",
+   "path": "profiles/presets/researcher@v1.yaml",
+   "sha256": "d0edfbd44829f172cd8f8a7c3daee2caa1f5dff52da0259d0e27ca04af7ba19d",
+   "approved_by": "P0 migration (2026-10-18)"
+  },
+  {
+   "id": "analyst",
+   "version": 1,
+   "status": "active",
+   "path": "profiles/presets/analyst@v1.yaml",
+   "sha256": "6a201c713c2db355e7873efb486284dd1a69f10edb6c5a470e16850a0e9b7937",
+   "approved_by": "P0 migration (2026-10-18)"
+  },
+  {
+   "id": "synth",
+   "version": 1,
+   "status": "active",
+   "path": "profiles/presets/synth@v1.yaml",
+   "sha256": "0026b27104deeb2f268aae367539ceac33dc9042815c0f3af2575dd5611b3d17",
+   "approved_by": "P0 migration (2026-10-18)"
+  },
+  {
+   "id": "writer",
+   "version": 1,
+   "status": "active",
+   "path": "profiles/presets/writer@v1.yaml",
+   "sha256": "f921283bf53998b3ccb5729d1dea44027b245bb701a357745df45d13c81255c3",
+   "approved_by": "P0 migration (2026-10-18)"
+  },
+  {
+   "id": "reviewer",
+   "version": 1,
+   "status": "active",
+   "path": "profiles/presets/reviewer@v1.yaml",
+   "sha256": "3fa99ea3a6096f6eb45b69d927033c8a0c7d50026744fc4544a1283c47322bc8",
+   "approved_by": "P0 migration (2026-10-18)"
+  },
+  {
+   "id": "debater_pro",
+   "version": 1,
+   "status": "active",
+   "path": "profiles/presets/debater_pro@v1.yaml",
+   "sha256": "1a483489a5e604768ef61d67f9d6a6c95b522d609c0ce9e636d30f5a417a6563",
+   "approved_by": "P0 migration (2026-10-18)"
+  },
+  {
+   "id": "debater_con",
+   "version": 1,
+   "status": "active",
+   "path": "profiles/presets/debater_con@v1.yaml",
+   "sha256": "a65ddfde7414b8a3beec4737bef76c0df7e42ec844c7b7d82300575c39de5608",
+   "approved_by": "P0 migration (2026-10-18)"
+  },
+  {
+   "id": "judge",
+   "version": 1,
+   "status": "active",
+   "path": "profiles/presets/judge@v1.yaml",
+   "sha256": "df677a15da9e84d8cb3111be3251d800a790c5ea9d6ec275f2f4b5ad06f06c0b",
+   "approved_by": "P0 migration (2026-10-18)"
+  }
+ ]
+}

@@ -1,0 +1,22 @@
+name: pipeline
+description: 固定顺序 A→B→C,无调度无仲裁
+defaults:
+  recursion_limit: 24
+nodes:
+  - id: stage_a
+    kind: fixed_agent
+    agent: researcher
+    output_schema: {type: object, properties: {note: {type: string}}}
+  - id: stage_b
+    kind: fixed_agent
+    agent: analyst
+    output_schema: {type: object, properties: {note: {type: string}}}
+  - id: stage_c
+    kind: fixed_agent
+    agent: writer
+    output_schema: {type: object, properties: {note: {type: string}}}
+edges:
+  - {from: START, to: stage_a}
+  - {from: stage_a, to: stage_b}
+  - {from: stage_b, to: stage_c}
+  - {from: stage_c, to: END}

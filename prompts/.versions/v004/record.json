@@ -1,0 +1,11 @@
+{
+  "version": 4,
+  "reason": "refine prompts/worker/writer.v1.md due to: rework",
+  "decision": "ROLLBACK",
+  "score_delta": 0.00982474030138547,
+  "created_at": 1790351752.4733746,
+  "files": {
+    "prompts/worker/writer.v1.md": "63773637f116ae28f45fc18644b9a576d69487a0534871ed682c69d1e445b73b"
+  },
+  "diff": "--- a/prompts/worker/writer.v1.md\n+++ b/prompts/worker/writer.v1.md\n@@ -11,4 +11,5 @@\n 评审意见(可为空):\n {review_comments}\n \n+补充约束(v2):只组织黑板上已发布的结论,压缩为三段,不复述评审原文。\n 补充约束(v2):只组织黑板上已发布的结论,压缩为三段,不复述评审原文。"
+}

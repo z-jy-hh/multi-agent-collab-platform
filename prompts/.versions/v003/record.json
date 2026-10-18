@@ -1,0 +1,11 @@
+{
+  "version": 3,
+  "reason": "refine prompts/worker/writer.v1.md due to: rework",
+  "decision": "KEEP",
+  "score_delta": 0.010767969172462255,
+  "created_at": 1790351695.554508,
+  "files": {
+    "prompts/worker/writer.v1.md": "3f7cbd132376c48fc49b6696a52a92fad9dcf046a0bda1d258d86a3992e2f76f"
+  },
+  "diff": "--- a/prompts/worker/writer.v1.md\n+++ b/prompts/worker/writer.v1.md\n@@ -10,3 +10,5 @@\n \n 评审意见(可为空):\n {review_comments}\n+\n+补充约束(v2):只组织黑板上已发布的结论,压缩为三段,不复述评审原文。"
+}

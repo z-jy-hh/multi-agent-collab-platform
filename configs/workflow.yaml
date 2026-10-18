@@ -1,0 +1,20 @@
+# Global workflow parameters (consumed by graphs/builder.py).
+matcher:
+  min_strength: 5.0     # C7 coverage gate
+  min_score: 0.9        # C7 score gate
+  gap_threshold: 0.1    # LLM tie-break only below this gap
+
+supervisor:
+  max_review_rounds: 2  # review rework cap (state counter + conditional edge)
+  max_subtasks: 6
+
+debate:
+  max_rounds: 4         # dual termination: rounds cap AND judge verdict
+
+llm:
+  offline_script: true  # FakeLLM when no key (rollback path, §五)
+
+runtime:
+  telemetry:
+    CREWAI_DISABLE_TELEMETRY: "true"
+    OTEL_SDK_DISABLED: "true"

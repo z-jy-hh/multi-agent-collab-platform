@@ -1,0 +1,38 @@
+id: reviewer
+version: 1
+status: active
+name: 审稿人
+description: P0 migration from configs/agents.yaml + role prompt
+cost: high
+capabilities:
+  domains:
+    review: 9.0
+    writing: 7.0
+  tags:
+  - review
+  - writing
+output_schema: review_verdict
+tools:
+- files
+budget:
+  turns: 8
+  tool_calls: 20
+  context_used: 800000
+behavior:
+  prompt: '# 审稿人(v1)
+
+
+    你是审稿人。检查成稿是否:① 回答了总任务;② 只使用了黑板上的结论;③ 结构完整。
+
+    输出 JSON:{{"verdict": "PASS" 或 "REWORK", "comments": "具体问题;PASS 时写 ''ok''"}}
+
+
+    总任务:{task}
+
+    成稿:
+
+    {report}
+
+    '
+rules: []
+skills: []

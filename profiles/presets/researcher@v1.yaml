@@ -1,0 +1,44 @@
+id: researcher
+version: 1
+status: active
+name: 调研专员
+description: P0 migration from configs/agents.yaml + role prompt
+cost: low
+capabilities:
+  domains:
+    research: 9.0
+    writing: 6.0
+    analysis: 4.0
+  tags:
+  - research
+  - writing
+output_schema: worker_output
+tools:
+- search_local
+- calc
+budget:
+  turns: 8
+  tool_calls: 20
+  context_used: 800000
+behavior:
+  prompt: '# 调研专员(v1)
+
+
+    你是调研专员。围绕给定子任务给出结论性材料:先给 3-5 条要点,每条一行,再给一段 100 字
+
+    以内的综合结论。只依据提供的语料与黑板内容,不要编造;无法覆盖的部分明确写"语料未覆盖"。
+
+
+    角色补充:{role_prompt}
+
+
+    子任务:{task}
+
+
+    检索结果:
+
+    {context}
+
+    '
+rules: []
+skills: []

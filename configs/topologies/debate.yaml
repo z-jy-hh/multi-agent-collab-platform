@@ -1,0 +1,29 @@
+name: debate
+description: 正反方多轮辩论 + 裁判收敛;双终止条件(最大轮数 且 裁判可判定)
+defaults:
+  max_rounds: 4
+  recursion_limit: 64
+nodes:
+  - id: pro_turn
+    kind: debater
+    agent: debater_pro
+    output_schema: {type: object, properties: {argument: {type: string}}}
+  - id: con_turn
+    kind: debater
+    agent: debater_con
+    output_schema: {type: object, properties: {argument: {type: string}}}
+  - id: judge_turn
+    kind: judge
+    agent: judge
+    output_schema:
+      type: object
+      required: [review_verdict]
+      properties:
+        review_verdict: {type: string, enum: [CONTINUE, CONCLUDED]}
+        status: {type: string}
+edges:
+  - {from: START, to: pro_turn}
+  - {from: pro_turn, to: con_turn}
+  - {from: con_turn, to: judge_turn}
+  - {from: judge_turn, to: pro_turn, conditional: true, rule: judge_gate}
+  - {from: judge_turn, to: END, conditional: true, rule: judge_gate}

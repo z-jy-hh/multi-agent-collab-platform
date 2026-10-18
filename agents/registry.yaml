@@ -1,0 +1,122 @@
+# agents/registry.yaml — 权威接入面（R17-W4a · 设计 v3 §3.1/§3.2）
+# lint: python -m agent_bridge.registry --lint   （未知键=错误；保留字=拒载；evidence 必须 measured@/static@/assumed-fail-closed 前缀）
+schema: agent_bridge.registry/v1
+
+defaults:                                # 未声明时继承；继承后仍是"显式展开"才生效
+  deadline_permission_s: 45              # F-5：服务端永不超时 → 平台自持
+  deadline_prompt_s: 600                 # 任务书 D6
+  close_grace_s: 10
+  budget_tool_calls: 200                 # 平台侧计数器（跨后端普适）
+  budget_wall_s: 1800
+
+platform_limits:                         # D4：与 per-run 上限是两层，平台层先行
+  consent: required                      # 平台级启用授权（与每任务 opt-in 双层并存，缺一不可）
+  daily_tool_calls: 600                  # 全后端合计
+  hourly_tool_calls: 120
+  daily_wall_s: 14400
+  max_concurrent_runs_per_backend: 2
+  counters_source: op-log 聚合           # 不新增存储；缺口由对账暴露
+
+backends:
+  dsh:
+    adapter: acp
+    transport: stdio
+    protocol_version: 1                  # 握手拒绝其它值（F-1；v2 拒绝有测试）
+    command: ["{node}", "{dsh_bin}", "--profile", "acp"]
+    command_env:                         # 子进程环境 = 系统必要项 + 此白名单（P9 探针钉死）
+      set: {DSH_PERMISSION_MODE: workspace-write}
+      allow: [DSH_HOME, DSH_BIN, DSH_DISPATCH_ROOT, DSH_EXPECTED_VERSION]
+    cwd:
+      template: "runs/dsh_dispatch/{run_id}"   # 单根、每 run 独立、不可变
+      must_contain: true                        # 容器校验（越界 = 拒绝）
+    permission:
+      mode_default: workspace-write
+      mode_allowed: [read-only, workspace-write]
+      option_answer: server-offered-only        # 只回服务端当帧 options 里出现过的 optionId
+    budgets:
+      context_used: 800000
+      tokens: null                       # F-3：真机无 token 字段 —— 配了数值 = lint 错误
+      money: null                        # 无计费数据源 —— 同上
+      tool_calls: 200
+      wall_s: 1800
+    version_lock: {agent_version: "0.2.0-rc.2"}   # 握手响亮校验（D1 语义）
+    healthcheck:
+      kind: dsh-check                    # main.py dsh-check；exit 0/1/2/3 = PASS/FAIL/NOT-RUN/ENV-FAIL
+    capabilities:                        # 17 条全量必填（§2.4；value/evidence 缺一即拒载）
+      protocol_version: {value: 1, evidence: "measured@真机握手 (F-1)"}
+      transport: {value: stdio, evidence: "measured@真机握手 (F-1)"}
+      permission_has_path: {value: false, evidence: "measured@真机抓帧 (F-2)"}
+      permission_options: {value: [allow-once, reject-once], evidence: "measured@真机抓帧 (F-2)"}
+      usage_shape: {value: context_used_size, evidence: "measured@真机 4 帧 (F-3/F7)"}
+      cancel_is_notification: {value: true, evidence: "measured@V5'/P5 (F-4)"}
+      server_times_out: {value: false, evidence: "measured@V4 挂满 240s (F-5)"}
+      supports_resume: {value: true, evidence: "measured@session/list+resume (F-1)"}
+      supports_background: {value: false, evidence: "measured@未观测到此能力"}
+      paid: {value: false, evidence: "measured@本地进程"}
+      single_prompt_per_session: {value: true, evidence: "measured@任务书 §1.1 (F-6)"}
+      single_root_cwd: {value: true, evidence: "measured@任务书 §1.1 (F-6)"}
+      single_handler_slot: {value: true, evidence: "measured@SR2 (F-7)"}
+      audit_hash_chain: {value: false, evidence: "measured@session.v4.jsonl.zstd 非链式 (F-10)"}
+      sandbox_semantics: {value: acl-single-root, evidence: "measured@icacls 哨兵"}
+      supports_elicitation: {value: false, evidence: "measured@任务书 §1.1 明确不支持"}
+      egress: {value: true, evidence: "measured@真模型回合调用模型 API"}
+    enabled: true
+    requires_authorization: false
+
+  wb:
+    adapter: acp
+    transport: stdio
+    protocol_version: 1
+    command: ["{wb_cli}", "--acp"]       # 静态 W-1；streamable-http / --serve v1 不接
+    mcp_policy: optional-strict          # D2：WB 自带 MCP/插件面仍在（平台不新增）；
+                                         # 可选 --strict-mcp-config 抑制其外部 MCP 配置（static@--help，W6 真机评估后再启用）
+    command_env:
+      set: {}
+      allow: []                          # 平台不注入任何 WB 凭据；登录态由其自身配置目录承担（部署前置）
+    cwd:
+      template: "runs/wb_dispatch/{run_id}"
+      must_contain: true
+    permission:
+      mode_default: default              # WB 自身档位名（静态 W-2）；白名单只此一档
+      mode_allowed: [default]            # bypassPermissions / acceptEdits / -y 永不出现在生成 argv
+      option_answer: server-offered-only
+    budgets:
+      context_used: null                 # 未证 → 不设
+      tokens: null                       # 未证 → 不设（无数据源不猜）
+      money: null                        # 服务端计费，平台无流 —— 只限量不计价（§6.2）
+      tool_calls: 60
+      wall_s: 900
+      turns: 3
+    version_lock: {agent_version: null}  # 首次真机握手后填入并锁定
+    healthcheck:
+      kind: wb-check                     # 离线档：CLI 存在性 + --help 快照比对（无网络/无登录/无模型）
+    capabilities:                        # 全量 assumed-fail-closed（§2.4）；真机探针后逐条升级 evidence
+      protocol_version: {value: 1, evidence: "assumed-fail-closed"}
+      transport: {value: stdio, evidence: "static@--acp"}
+      permission_has_path: {value: false, evidence: "assumed-fail-closed"}
+      permission_options: {value: [], evidence: "assumed-fail-closed（运行时只回服务端当帧 options）"}
+      usage_shape: {value: none, evidence: "assumed-fail-closed"}
+      cancel_is_notification: {value: true, evidence: "assumed-fail-closed@ACP v1 形状"}
+      server_times_out: {value: false, evidence: "assumed-fail-closed"}
+      supports_resume: {value: false, evidence: "static@--resume 未证 → 按 false 禁用"}
+      supports_background: {value: false, evidence: "static@--bg 未证 → 按 false 禁用"}
+      paid: {value: true, evidence: "static@copilot.tencent.com"}
+      single_prompt_per_session: {value: true, evidence: "assumed-fail-closed"}
+      single_root_cwd: {value: true, evidence: "assumed-fail-closed"}
+      single_handler_slot: {value: true, evidence: "assumed-fail-closed"}
+      audit_hash_chain: {value: true, evidence: "static@~/.workbuddy/audit-log"}
+      sandbox_semantics: {value: builtin-vendor, evidence: "static@vendor/sandbox"}
+      supports_elicitation: {value: false, evidence: "assumed-fail-closed"}
+      egress: {value: true, evidence: "static@copilot.tencent.com"}
+    enabled: false                       # 红线：默认关闭
+    requires_authorization: true         # paid + 需登录 → 每次运行显式授权（consent token 落审计）
+
+bindings: {}                               # G12: 占位 binding(dsh-exec/wb-exec) 已移除；
+                                           # 真实 agent_id 走 routing.map（否则每次 run 会派发两次）
+
+routing:
+  prefix_separator: ":"
+  unknown_prefix: reject                 # fail-closed
+  unbound_agent: crewai                  # 未绑定 agent_id 走既有 CrewAI 路径，行为不变
+  map:                                   # G12: 真实 agent_id -> 后端（与 bindings 并存，additive）
+    researcher: dsh                      # 调研类任务走 dsh 原生；其余仍走 CrewAI

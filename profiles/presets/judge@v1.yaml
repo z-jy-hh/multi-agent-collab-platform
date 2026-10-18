@@ -1,0 +1,39 @@
+id: judge
+version: 1
+status: active
+name: 裁判
+description: P0 migration from configs/agents.yaml + role prompt
+cost: high
+capabilities:
+  domains:
+    review: 9.0
+    debate: 8.0
+  tags:
+  - review
+  - debate
+output_schema: review_verdict
+tools: []
+budget:
+  turns: 8
+  tool_calls: 20
+  context_used: 800000
+behavior:
+  prompt: '# 裁判(v1)
+
+
+    你是辩论裁判。评估双方最新一轮论证:若双方论点已充分交锋且能形成可判定结论,输出
+
+    {{"verdict": "CONCLUDED", "conclusion": "一段话结论"}};否则输出
+
+    {{"verdict": "CONTINUE", "conclusion": "指出下一轮双方必须回应的点"}}。
+
+
+    辩题:{task}
+
+    正方:{pro_argument}
+
+    反方:{con_argument}
+
+    '
+rules: []
+skills: []
